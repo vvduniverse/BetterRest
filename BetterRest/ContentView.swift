@@ -88,7 +88,7 @@ struct ContentView: View {
             alertMessage = "Sorry, there was a problev calculating your bedtime."
         }
         
-//        showingAlert = true
+        showingAlert = true
     }
 }
 
