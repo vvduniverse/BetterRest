@@ -18,6 +18,8 @@ struct ContentView: View {
     @State private var alertMessage = ""
     @State private var showingAlert = false
     
+    @State private var idealBadtime = ""
+    
     static var defaultWakeTime: Date {
         var components = DateComponents()
         components.hour = 7
@@ -32,7 +34,7 @@ struct ContentView: View {
                     Text("When do you want to wake up?")
                         .font(.headline)
                     
-                    DatePicker("Please ente a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
+                    DatePicker("Please enter a time", selection: $wakeUp, displayedComponents: .hourAndMinute)
                         .labelsHidden()
                 }
                 .listRowSeparator(.hidden)
@@ -55,16 +57,15 @@ struct ContentView: View {
                     }
                 }
                 .listRowSeparator(.hidden)
+                
+//                Section {
+                Text("Your ideal bedtime is...")
+                    .font(.headline)
+                Text("\(idealBadtime)")
+//                }
             }
             .navigationTitle("BetterRest")
-            .toolbar {
-                Button("Calculate", action: calculateBedtime)
-            }
-            .alert(alertTitle, isPresented: $showingAlert) {
-                Button("OK") {}
-            } message: {
-                Text(alertMessage)
-            }
+            .onAppear(perform: calculateBedtime)
         }
     }
     
@@ -78,16 +79,16 @@ struct ContentView: View {
             let minute = (components.minute ?? 0) * 60
             
             let prediction = try model.prediction(wake: Double(hour + minute), estimatedSleep: sleepAmount, coffee: Double(coffeeAmount))
-            
+            print(prediction)
             let sleepTime = wakeUp - prediction.actualSleep
-            alertTitle = "Your ideal bedtime is..."
-            alertMessage = sleepTime.formatted(date: .omitted, time: .shortened)
+//            alertTitle = "Your ideal bedtime is..."
+            idealBadtime = sleepTime.formatted(date: .omitted, time: .shortened)
         } catch {
             alertTitle = "Error"
             alertMessage = "Sorry, there was a problev calculating your bedtime."
         }
         
-        showingAlert = true
+//        showingAlert = true
     }
 }
 
